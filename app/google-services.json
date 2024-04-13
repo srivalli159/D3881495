@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "485791798328",
+    "project_id": "local-sports-equipment-swap",
+    "storage_bucket": "local-sports-equipment-swap.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485791798328:android:44ee7d7597bd95958982cd",
+        "android_client_info": {
+          "package_name": "uk.ac.tees.mad.d3881495"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "485791798328-cs95m02krlsjdh9h9cgg7memeivr685b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "uk.ac.tees.mad.d3881495",
+            "certificate_hash": "50142d843a625db3db251955a702b560ad8b2392"
+          }
+        },
+        {
+          "client_id": "485791798328-v4suc2o5m4ruolmoh1peamvt59itcu0o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOfQtiD1wXOhtFfVr79JYvJWu4zKPdc4I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "485791798328-v4suc2o5m4ruolmoh1peamvt59itcu0o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
