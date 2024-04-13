@@ -17,14 +17,10 @@ import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
     primary = PrimaryBlue,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = PrimaryBlue,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -57,7 +53,7 @@ fun LocalSportsEquipmentSwapTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
+            window.statusBarColor = PrimaryBlue.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }
