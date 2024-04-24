@@ -63,7 +63,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.launch
-import uk.ac.tees.mad.d3881495.NavigationDestination
+import uk.ac.tees.mad.d3881495.NavigationRoute
 import uk.ac.tees.mad.d3881495.R
 import uk.ac.tees.mad.d3881495.data.repository.GoogleAuthClient
 import uk.ac.tees.mad.d3881495.ui.theme.PrimaryBlue
@@ -329,7 +329,7 @@ fun RegisterScreen(
     }
 }
 
-object RegisterDestination : NavigationDestination {
+object RegisterRoute : NavigationRoute {
     override val route = "register"
     override val titleRes: Int = R.string.register
 }

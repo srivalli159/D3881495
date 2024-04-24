@@ -33,11 +33,11 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import kotlinx.coroutines.delay
-import uk.ac.tees.mad.d3881495.NavigationDestination
+import uk.ac.tees.mad.d3881495.NavigationRoute
 import uk.ac.tees.mad.d3881495.R
 import uk.ac.tees.mad.d3881495.ui.theme.PrimaryBlue
 
-object SplashScreenDestination : NavigationDestination {
+object SplashScreenRoute : NavigationRoute {
     override val route = "splash"
     override val titleRes: Int = R.string.app_name
 }
@@ -66,9 +66,9 @@ fun SplashScreen(onComplete: () -> Unit) {
     ) {
         LaunchedEffect(key1 = true) {
             animation.animateTo(1f, animationSpec = tween(1500))
-            delay(1800L)
+            delay(1500L)
             isVisible.value = false
-            delay(1200L)
+            delay(800L)
             onComplete()
         }
         Box(

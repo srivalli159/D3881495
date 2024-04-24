@@ -9,23 +9,29 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import uk.ac.tees.mad.d3881495.data.repository.GoogleAuthClient
-import uk.ac.tees.mad.d3881495.ui.auth.LoginDestination
+import uk.ac.tees.mad.d3881495.ui.auth.LoginRoute
 import uk.ac.tees.mad.d3881495.ui.auth.LoginScreen
-import uk.ac.tees.mad.d3881495.ui.auth.RegisterDestination
+import uk.ac.tees.mad.d3881495.ui.auth.RegisterRoute
 import uk.ac.tees.mad.d3881495.ui.auth.RegisterScreen
-import uk.ac.tees.mad.d3881495.ui.homescreen.HomeDestination
+import uk.ac.tees.mad.d3881495.ui.homescreen.HomeRoute
 import uk.ac.tees.mad.d3881495.ui.homescreen.HomeScreen
+import uk.ac.tees.mad.d3881495.ui.itemDetail.ItemDetailScreen
+import uk.ac.tees.mad.d3881495.ui.itemDetail.ItemDetailsRoute
+import uk.ac.tees.mad.d3881495.ui.listItem.AddSportItemsScreen
+import uk.ac.tees.mad.d3881495.ui.listItem.ListItemRoute
 import uk.ac.tees.mad.d3881495.ui.presentation.SplashScreen
-import uk.ac.tees.mad.d3881495.ui.presentation.SplashScreenDestination
+import uk.ac.tees.mad.d3881495.ui.presentation.SplashScreenRoute
 import uk.ac.tees.mad.d3881495.ui.theme.LocalSportsEquipmentSwapTheme
 
 @AndroidEntryPoint
@@ -52,16 +58,16 @@ class MainActivity : ComponentActivity() {
 
                     val startDestination =
                         if ((currentUser != null) || (googleAuthUiClient.getSignedInUser() != null)) {
-                            HomeDestination.route
+                            HomeRoute.route
                         } else {
-                            LoginDestination.route
+                            LoginRoute.route
                         }
 
                     NavHost(
                         navController = navController,
-                        startDestination = SplashScreenDestination.route
+                        startDestination = SplashScreenRoute.route
                     ) {
-                        composable(SplashScreenDestination.route) {
+                        composable(SplashScreenRoute.route) {
                             SplashScreen(
                                 onComplete = {
                                     scope.launch(Dispatchers.Main) {
@@ -71,16 +77,34 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
-                        composable(HomeDestination.route) {
-                            HomeScreen(navController = navController, onSignOut = {
-                                scope.launch {
-                                    firebase.signOut()
-                                    googleAuthUiClient.signOut()
-                                    navController.navigate(LoginDestination.route)
+                        composable(HomeRoute.route) {
+                            HomeScreen(
+                                navController = navController,
+//                                onSignOut = {
+//                                    scope.launch {
+//                                        firebase.signOut()
+//                                        googleAuthUiClient.signOut()
+//                                        navController.navigate(LoginRoute.route)
+//                                    }
+//                                }
+                                onSportItemClick = {
+                                    navController.navigate("${ItemDetailsRoute.route}/$it")
                                 }
-                            })
+                            )
                         }
-                        composable(LoginDestination.route) {
+                        composable(
+                            route = ItemDetailsRoute.routeWithArgs,
+                            arguments = listOf(navArgument(ItemDetailsRoute.itemIdArg) {
+                                type = NavType.StringType
+                            })
+                        ) {
+                            ItemDetailScreen(
+                                onBack = {
+                                    navController.navigateUp()
+                                }
+                            )
+                        }
+                        composable(LoginRoute.route) {
                             LoginScreen(
                                 loginSuccess = {
                                     Toast.makeText(
@@ -88,26 +112,31 @@ class MainActivity : ComponentActivity() {
                                         "Login Success",
                                         Toast.LENGTH_SHORT
                                     ).show()
-                                    navController.navigate(HomeDestination.route)
+                                    navController.navigate(HomeRoute.route)
 
                                 },
                                 onRegisterClick = {
-                                    navController.navigate(RegisterDestination.route)
+                                    navController.navigate(RegisterRoute.route)
                                 }
                             )
                         }
-                        composable(RegisterDestination.route) {
+                        composable(RegisterRoute.route) {
                             RegisterScreen(
-                                onLoginClick = { navController.navigate(LoginDestination.route) },
+                                onLoginClick = { navController.navigate(LoginRoute.route) },
                                 registerSuccess = {
                                     Toast.makeText(
                                         applicationContext,
                                         "Register Success",
                                         Toast.LENGTH_SHORT
                                     ).show()
-                                    navController.navigate(HomeDestination.route)
+                                    navController.navigate(HomeRoute.route)
 
                                 }
+                            )
+                        }
+                        composable(ListItemRoute.route) {
+                            AddSportItemsScreen(
+                                onNavigateBack = { navController.navigateUp() }
                             )
                         }
                     }
@@ -117,7 +146,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-interface NavigationDestination {
+interface NavigationRoute {
     val route: String
     val titleRes: Int
 }

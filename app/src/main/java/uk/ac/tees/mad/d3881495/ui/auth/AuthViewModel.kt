@@ -15,9 +15,9 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uk.ac.tees.mad.d3881495.data.repository.AuthRepository
+import uk.ac.tees.mad.d3881495.domain.RegisterState
 import uk.ac.tees.mad.d3881495.domain.LoginState
 import uk.ac.tees.mad.d3881495.domain.LoginStatus
-import uk.ac.tees.mad.d3881495.domain.RegisterState
 import uk.ac.tees.mad.d3881495.domain.Resource
 import uk.ac.tees.mad.d3881495.domain.SignInResult
 import uk.ac.tees.mad.d3881495.domain.UserData

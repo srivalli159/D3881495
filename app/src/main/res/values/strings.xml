@@ -3,4 +3,6 @@
     <string name="home">Home</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
+    <string name="list_item">List item</string>
+    <string name="item_details">Item detail</string>
 </resources>

@@ -20,7 +20,7 @@ android {
 
     defaultConfig {
         applicationId = "uk.ac.tees.mad.d3881495"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -91,8 +91,15 @@ dependencies {
 
     //Dagger - Hilt
     implementation("com.google.dagger:hilt-android:2.47")
+    implementation(libs.play.services.location)
+    implementation(libs.firebase.storage.ktx)
     ksp("com.google.dagger:hilt-compiler:2.47")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    implementation ("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
+
+    //Coil
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
