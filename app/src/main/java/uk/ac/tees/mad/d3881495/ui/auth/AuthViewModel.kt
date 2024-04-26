@@ -85,7 +85,7 @@ class AuthViewModel @Inject constructor(
 
 
     fun saveUserInFirestore(user: UserData) = viewModelScope.launch {
-        repository.saveUser(email = user.email, username = user.username, userId = user.userId)
+        repository.saveUser(email = user.email, username = user.name, userId = user.userId)
     }
 
     var username = mutableStateOf("Guest")
@@ -107,7 +107,7 @@ class AuthViewModel @Inject constructor(
                             val list = mySnapshot.data
                             if (list != null) {
                                 for (items in list) {
-                                    if (items.key == "username") {
+                                    if (items.key == "name") {
                                         username.value = items.value.toString()
                                     }
                                 }

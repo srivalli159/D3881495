@@ -78,7 +78,7 @@ import kotlinx.coroutines.launch
 import uk.ac.tees.mad.d3881495.NavigationRoute
 import uk.ac.tees.mad.d3881495.R
 import uk.ac.tees.mad.d3881495.domain.Item
-import uk.ac.tees.mad.d3881495.ui.PhotoPickerOptionBottomSheet
+import uk.ac.tees.mad.d3881495.ui.PhotoOptions
 import uk.ac.tees.mad.d3881495.utils.ApplicationViewModel
 import uk.ac.tees.mad.d3881495.utils.LocationRepository
 import java.io.ByteArrayOutputStream
@@ -167,7 +167,7 @@ fun AddSportItemsScreen(
                         sheetState = bottomSheetState,
                         windowInsets = WindowInsets.ime,
                         content = {
-                            PhotoPickerOptionBottomSheet(
+                            PhotoOptions(
                                 onGalleryClick = {
                                     scope.launch { bottomSheetState.hide() }.invokeOnCompletion {
                                         if (!bottomSheetState.isVisible) {

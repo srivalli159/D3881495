@@ -5,4 +5,6 @@
     <string name="register">Register</string>
     <string name="list_item">List item</string>
     <string name="item_details">Item detail</string>
+    <string name="profile">Profile</string>
+    <string name="favorite">Favorites</string>
 </resources>

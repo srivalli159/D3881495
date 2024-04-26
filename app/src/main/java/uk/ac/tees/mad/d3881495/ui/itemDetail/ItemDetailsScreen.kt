@@ -26,22 +26,25 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.outlined.ChevronRight
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,6 +53,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -59,6 +63,7 @@ import coil.request.ImageRequest
 import uk.ac.tees.mad.d3881495.NavigationRoute
 import uk.ac.tees.mad.d3881495.R
 import uk.ac.tees.mad.d3881495.domain.ItemResponse
+import uk.ac.tees.mad.d3881495.ui.theme.PrimaryBlue
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -76,10 +81,6 @@ fun ItemDetailScreen(
     val pagerState = rememberPagerState {
         item?.images?.size ?: 0
     }
-    var showPopup by rememberSaveable { mutableStateOf(false) }
-    val showPopupLoading by rememberSaveable { mutableStateOf(false) }
-
-
 
     Scaffold(
         bottomBar = {
@@ -89,7 +90,7 @@ fun ItemDetailScreen(
                     .fillMaxWidth()
                     .height(50.dp)
                     .clip(MaterialTheme.shapes.medium)
-                    .background(MaterialTheme.colorScheme.primary)
+                    .background(PrimaryBlue)
                     .clickable {
                         try {
                             val intent = Intent(Intent.ACTION_VIEW)
@@ -98,7 +99,8 @@ fun ItemDetailScreen(
                             intent.setData(data)
                             context.startActivity(intent)
                         } catch (e: ActivityNotFoundException) {
-                            Toast.makeText(context, "No email app", Toast.LENGTH_SHORT)
+                            Toast
+                                .makeText(context, "No email app", Toast.LENGTH_SHORT)
                                 .show()
                         } catch (t: Throwable) {
                             Log.d("Message ERROR", t.message.toString())
@@ -156,7 +158,8 @@ fun ItemDetailScreen(
                                 Text(
                                     text = "${item?.name}",
                                     fontSize = 22.sp,
-                                    fontWeight = FontWeight.Medium
+                                    fontWeight = FontWeight.Medium,
+                                    color = PrimaryBlue
                                 )
                                 Row(Modifier.padding(vertical = 16.dp)) {
                                     Text(
@@ -226,6 +229,22 @@ fun ItemDetailScreen(
                                 )
 
                             }
+                            Row(
+                                Modifier.width(300.dp),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                Text(
+                                    text = "Price:",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                                Spacer(modifier = Modifier.weight(1f))
+                                Text(
+                                    text = "€ ${item?.price}",
+                                    fontSize = 20.sp,
+                                )
+
+                            }
                         }
 
                         Column(Modifier.padding(vertical = 16.dp)) {
@@ -244,7 +263,6 @@ fun ItemDetailScreen(
         }
     }
 }
-
 
 @Composable
 fun PageIndicator(pageCount: Int, currentPage: Int, modifier: Modifier) {
@@ -271,7 +289,7 @@ fun IndicatorDot(
             .size(width.value)
             .clip(CircleShape)
             .background(
-                if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(
+                if (isSelected) PrimaryBlue else PrimaryBlue.copy(
                     alpha = 0.5f
                 )
             )

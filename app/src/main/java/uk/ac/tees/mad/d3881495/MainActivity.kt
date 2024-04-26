@@ -7,8 +7,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,6 +27,8 @@ import uk.ac.tees.mad.d3881495.ui.auth.LoginRoute
 import uk.ac.tees.mad.d3881495.ui.auth.LoginScreen
 import uk.ac.tees.mad.d3881495.ui.auth.RegisterRoute
 import uk.ac.tees.mad.d3881495.ui.auth.RegisterScreen
+import uk.ac.tees.mad.d3881495.ui.favorite.FavoriteRoute
+import uk.ac.tees.mad.d3881495.ui.favorite.FavoriteScreen
 import uk.ac.tees.mad.d3881495.ui.homescreen.HomeRoute
 import uk.ac.tees.mad.d3881495.ui.homescreen.HomeScreen
 import uk.ac.tees.mad.d3881495.ui.itemDetail.ItemDetailScreen
@@ -32,6 +37,11 @@ import uk.ac.tees.mad.d3881495.ui.listItem.AddSportItemsScreen
 import uk.ac.tees.mad.d3881495.ui.listItem.ListItemRoute
 import uk.ac.tees.mad.d3881495.ui.presentation.SplashScreen
 import uk.ac.tees.mad.d3881495.ui.presentation.SplashScreenRoute
+import uk.ac.tees.mad.d3881495.ui.profile.EditProfile
+import uk.ac.tees.mad.d3881495.ui.profile.EditProfileRoute
+import uk.ac.tees.mad.d3881495.ui.profile.ProfileRoute
+import uk.ac.tees.mad.d3881495.ui.profile.ProfileScreen
+import uk.ac.tees.mad.d3881495.ui.profile.ProfileViewModel
 import uk.ac.tees.mad.d3881495.ui.theme.LocalSportsEquipmentSwapTheme
 
 @AndroidEntryPoint
@@ -55,6 +65,8 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     val currentUser = firebase.currentUser
                     val scope = rememberCoroutineScope()
+                    val profileViewModel: ProfileViewModel = hiltViewModel()
+                    val getUserState by profileViewModel.getUserState.collectAsState(initial = null)
 
                     val startDestination =
                         if ((currentUser != null) || (googleAuthUiClient.getSignedInUser() != null)) {
@@ -80,13 +92,6 @@ class MainActivity : ComponentActivity() {
                         composable(HomeRoute.route) {
                             HomeScreen(
                                 navController = navController,
-//                                onSignOut = {
-//                                    scope.launch {
-//                                        firebase.signOut()
-//                                        googleAuthUiClient.signOut()
-//                                        navController.navigate(LoginRoute.route)
-//                                    }
-//                                }
                                 onSportItemClick = {
                                     navController.navigate("${ItemDetailsRoute.route}/$it")
                                 }
@@ -139,6 +144,47 @@ class MainActivity : ComponentActivity() {
                                 onNavigateBack = { navController.navigateUp() }
                             )
                         }
+                        composable(ProfileRoute.route) {
+                            ProfileScreen(
+                                onSignOut = {
+                                    scope.launch {
+                                        googleAuthUiClient.signOut()
+                                        navController.navigate(LoginRoute.route)
+                                        Toast.makeText(
+                                            applicationContext,
+                                            "Signed out",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                },
+                                onEditProfile = { navController.navigate(EditProfileRoute.route) },
+                                onFavorite = { navController.navigate(FavoriteRoute.route) },
+                                viewModel = profileViewModel,
+                                onBack = {
+                                    navController.navigateUp()
+                                }
+
+                            )
+                        }
+                        composable(EditProfileRoute.route) {
+                            EditProfile(
+                                viewModel = profileViewModel, onComplete = {
+                                    navController.navigateUp()
+                                },
+                                getUserState = getUserState
+                            )
+                        }
+                        composable(FavoriteRoute.route) {
+                            FavoriteScreen(
+                                onItemClick = {
+                                    navController.navigate(ItemDetailsRoute.route + "/" + it)
+                                },
+                                onBack = {
+                                    navController.navigateUp()
+                                }
+                            )
+                        }
+
                     }
                 }
             }

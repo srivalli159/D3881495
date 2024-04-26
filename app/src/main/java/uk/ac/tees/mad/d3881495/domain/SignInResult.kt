@@ -11,11 +11,7 @@ data class LoginStatus(
     val isError: String? = ""
 )
 
-data class UserData(
-    val userId: String,
-    val username: String?,
-    val email: String?
-)
+
 data class SignInResult(
     val data: UserData? = null,
     val isSuccessful: Boolean = false,

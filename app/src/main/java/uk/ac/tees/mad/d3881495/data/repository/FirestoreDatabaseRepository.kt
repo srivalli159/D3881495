@@ -25,6 +25,8 @@ interface FirestoreDatabaseRepository {
     fun uploadSportItemDetails(item: Item): Flow<Resource<String>>
     fun fetchAllSportItems(): Flow<Resource<List<ItemResponse>>>
     fun fetchItemDetailsById(uniqueItemId: String): Flow<Resource<ItemResponse>>
+    fun fetchMyListedItems(): Flow<Resource<List<ItemResponse>>>
+    fun getMultipleItemsWithKeys(itemIds: List<String>): Flow<Resource<List<ItemResponse>>>
 }
 
 class DatabaseRepository(
@@ -142,7 +144,7 @@ class DatabaseRepository(
                 val listedBy = if (ownerUserSnapshot.exists()) {
                     val userData = ownerUserSnapshot.data
                     UserModel(
-                        name = userData?.get("username") as? String ?: "",
+                        name = userData?.get("name") as? String ?: "",
                         email = userData?.get("email") as? String ?: "",
                         phone = userData?.get("phone") as? String ?: "",
                         profileImage = userData?.get("images") as? String ?: "",
@@ -173,4 +175,74 @@ class DatabaseRepository(
 
             awaitClose { close() }
         }
+
+
+    override fun fetchMyListedItems(): Flow<Resource<List<ItemResponse>>> = callbackFlow {
+        trySend(Resource.Loading())
+        try {
+            val querySnapshot = firestore.collection("sportItems")
+                .whereEqualTo("listedByKey", Firebase.auth.currentUser?.uid).get().await()
+            val itemList = querySnapshot.documents.mapNotNull { doc ->
+                val data = doc.data ?: return@mapNotNull null
+                ItemResponse(
+                    id = doc.id,
+                    name = data["name"] as String,
+                    description = data["description"] as String,
+                    images = data["images"] as List<String>,
+                    condition = data["condition"] as String,
+                    type = data["type"] as String,
+                    listedDate = (data["listedDate"] as Timestamp).toDate(),
+                    status = data["status"] as String,
+                    price = data["price"] as String,
+                    listedItemAddress = data["address"] as String,
+                    listedItemLocation = data["location"] as GeoPoint
+                )
+            }
+            trySend(Resource.Success(itemList))
+        } catch (e: Exception) {
+            Log.w("Fetch Failure", "Error retrieving items", e)
+            trySend(Resource.Error("Error retrieving items"))
+        }
+        awaitClose { close() }
+    }
+
+    override fun getMultipleItemsWithKeys(itemIds: List<String>): Flow<Resource<List<ItemResponse>>> =
+        callbackFlow {
+
+            trySend(Resource.Loading())
+            try {
+                val responseList = mutableListOf<ItemResponse>()
+                for (itemId in itemIds) {
+                    val document =
+                        FirebaseFirestore.getInstance().collection("sportItems").document(itemId)
+                            .get().await()
+                    if (document.exists()) {
+                        val data = document.data
+                        if (data != null) {
+                            responseList.add(
+                                ItemResponse(
+                                    id = document.id,
+                                    name = data["name"] as String,
+                                    description = data["description"] as String,
+                                    images = data["images"] as List<String>,
+                                    condition = data["condition"] as String,
+                                    type = data["type"] as String,
+                                    listedDate = (data["listedDate"] as Timestamp).toDate(),
+                                    status = data["status"] as String,
+                                    price = data["price"] as String,
+                                    listedItemAddress = data["address"] as String,
+                                    listedItemLocation = data["location"] as GeoPoint
+                                )
+                            )
+                        }
+                    }
+                }
+                trySend(Resource.Success(responseList))
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+                trySend(Resource.Error("Error fetching Items"))
+            }
+            awaitClose { close() }
+        }
+
 }

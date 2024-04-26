@@ -55,8 +55,8 @@ class GoogleAuthClient(
                 data = user?.run {
                     UserData(
                         userId = uid,
-                        username = displayName,
-                        email = email
+                        name = displayName ?: "",
+                        email = email ?: "",
                     )
                 },
                 errorMessage = null
@@ -74,8 +74,8 @@ class GoogleAuthClient(
     fun getSignedInUser(): UserData? = auth.currentUser?.run {
         UserData(
             userId = uid,
-            username = displayName,
-            email = email
+            name = displayName?: "",
+            email = email ?: "",
         )
     }
 
